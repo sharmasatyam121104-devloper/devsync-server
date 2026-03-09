@@ -1,0 +1,27 @@
+{
+  "name": "dev-sync-server",
+  "version": "1.0.0",
+  "description": "This is backend of Dev-Snc.",
+  "license": "ISC",
+  "author": "Satyam Sharma",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --exec ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mongoose": "^9.2.4",
+    "morgan": "^1.10.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^25.3.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}

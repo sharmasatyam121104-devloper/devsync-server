@@ -1,4 +1,4 @@
-export const welcomeTemplate = (name: string) => {
+export const welcomeTemplate = (fullname: string) => {
   return `
   <div style="font-family: Arial, sans-serif; background:#f4f6f8; padding:40px;">
     <div style="max-width:600px; margin:auto; background:white; border-radius:10px; padding:30px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
@@ -8,7 +8,7 @@ export const welcomeTemplate = (name: string) => {
       <h3 style="text-align:center;">🎉 Welcome to DevSync!</h3>
 
       <p style="color:#555; font-size:16px;">
-        Hi <b>${name}</b>,
+        Hi <b>${fullname}</b>,
       </p>
 
       <p style="color:#555; font-size:16px;">

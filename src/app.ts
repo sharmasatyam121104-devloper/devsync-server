@@ -2,6 +2,7 @@ import express from "express"
 import cors from 'cors'
 import cookieParser from "cookie-parser"
 import {requestLogger} from './utils/logger'
+import UserRouter from "./modules/user/user.routes"
 
 const app = express()
 
@@ -18,5 +19,7 @@ app.use(requestLogger)
 app.get("/", (req, res) => {
   res.send("DevSync API Running")
 })
+
+app.use('/user',UserRouter)
 
 export default app

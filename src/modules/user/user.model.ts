@@ -1,6 +1,5 @@
 import { Schema, model } from "mongoose"
 import { UserInterface } from "./user.interface"
-import { NextFunction } from "express"
 import { hashPassword } from "./user.service"
 
 const userSchema = new Schema<UserInterface>(
@@ -33,7 +32,9 @@ const userSchema = new Schema<UserInterface>(
       type: Boolean,
       default: false
     },
-
+    refreshToken: {
+      type: String
+    },
     role: {
       type: String,
       enum: ["ADMIN", "USER"],
@@ -45,15 +46,6 @@ const userSchema = new Schema<UserInterface>(
   }
 )
 
-userSchema.pre("save", async function () {
-
-  if (!this.isModified("password")) {
-    return
-  }
-
-  this.password = await hashPassword(this.password)
-
-})
 
 const UserModel = model<UserInterface>("User", userSchema)
 

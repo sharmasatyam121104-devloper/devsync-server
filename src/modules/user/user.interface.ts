@@ -10,5 +10,6 @@ export interface UserInterface extends Document {
     verify: boolean
     accessToken?: string
     refreshToken?: string
+    refreshTokenExpiry?: Date
     role: "ADMIN" | "USER"
 }

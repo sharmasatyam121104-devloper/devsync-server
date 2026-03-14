@@ -1,6 +1,5 @@
 import { Schema, model } from "mongoose"
 import { UserInterface } from "./user.interface"
-import { hashPassword } from "./user.service"
 
 const userSchema = new Schema<UserInterface>(
   {
@@ -8,7 +7,6 @@ const userSchema = new Schema<UserInterface>(
       type: String,
       required: true
     },
-
     email: {
       type: String,
       required: true,
@@ -34,6 +32,9 @@ const userSchema = new Schema<UserInterface>(
     },
     refreshToken: {
       type: String
+    },
+    refreshTokenExpiry: {
+      type: Date
     },
     role: {
       type: String,

@@ -1,56 +1,11 @@
-import bcrypt from 'bcrypt'
 import UserModel from './user.model'
 import { tryError } from '../../utils/serverErrorhandler'
 import sendMail from '../../utils/sendEmail'
 import { otpTemplate } from '../../utils/otpTemplate'
 import moment from 'moment'
-import crypto from "crypto";
-import jwt, { SignOptions } from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
+import { comparePassword, generateOTP, generateToken, getAccessToken, hashPassword } from './user.util'
 
-export const hashPassword = async (password: string) => {
-  const salt = await bcrypt.genSalt(10)
-  return bcrypt.hash(password, salt)
-}
-
-export const comparePassword = async (password: string, hash: string) => {
-  return bcrypt.compare(password, hash)
-}
-
-export const generateToken = (length = 64) => {
-  return crypto.randomBytes(length).toString("hex");
-};
-
-const getAccessToken = async (auth:any ) => {
-
-    const payload = {
-      id: auth._id,
-      email: auth.email,
-      fullname: auth.fullname,
-    }
-
-    const secret = process.env.AUTH_SECRET
-    const expiresIn = process.env.ACCESS_TOKEN_EXPIRY
-
-    if (!secret) {
-        throw new Error("Auth secret is missing.")
-    }
-
-    if (!expiresIn) {
-        throw new Error("Access token expiry is missing.")
-    }
-
-    const options: SignOptions = {
-        expiresIn: expiresIn as SignOptions["expiresIn"]
-    }
-
-    const token = jwt.sign(payload, secret, options)
-
-    return token
-}
-
-export const generateOTP = (): string => {
-  return Math.floor(100000 + Math.random() * 900000).toString()
-}
 
 
 export const signup = async(body: any) => {
@@ -105,13 +60,16 @@ export const login = async(body: any)=>{
 
   const accessToken = await getAccessToken(existingUser)
   const refreshToken = generateToken()
+  const refreshTokenExpiry = moment().add(30, "days").toDate()
 
   existingUser.refreshToken = refreshToken
+  existingUser.refreshTokenExpiry = refreshTokenExpiry
   await existingUser.save()
 
   return {
     success: true,
     message: "you are logged in  successfully!",
+    role: existingUser.role,
     accessToken,
     refreshToken
   }
@@ -219,4 +177,39 @@ export const changePassword = async(body: any)=>{
     message: "Password chnaged successfully please login to continue services."
   }  
 
+}
+
+export const refreshToken = async(refreshToken: string)=>{
+  if (!refreshToken) {
+    throw tryError("Please provide refresh token.", 400)
+  }
+
+  const user = await UserModel.findOne({ refreshToken })
+
+  if (!user) {
+    throw tryError("User not found.", 404)
+  }
+
+  if (moment().isAfter(user.refreshTokenExpiry)) {
+    throw tryError("Refresh token expired, Please login.", 401)
+  }
+
+  const accessToken = await getAccessToken(user)
+
+  return {
+    success: true,
+    message: "Access token regenerated successfully!",
+    accessToken,
+    refreshToken
+  }
+}
+
+export const getSession = async(accessToken: string)=>{
+  if (!accessToken) {
+      throw tryError("Invalid session",401)
+  }
+
+  const session = await jwt.verify(accessToken, process.env.AUTH_SECRET!)
+  return session
+  
 }

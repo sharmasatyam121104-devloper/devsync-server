@@ -18,10 +18,8 @@ const ui = {
 
 const startServer = async () => {
   try {
-    // 1. Pehle Database Connect Karein
     await connectDB();
 
-    // 2. Phir Server Listen Karein
     app.listen(PORT, () => {
       console.log(`\n${ui.border}`);
       console.log(`${chalk.bgBlue.white.bold(" SYSTEM STATUS ")} ${chalk.green.bold("ONLINE")}`);

@@ -115,7 +115,6 @@ export const refreshToken = async(req: Request, res: Response)=>{
     try {
         const refreshToken = req.cookies.refreshToken
         const result = await userService.refreshToken(refreshToken)
-        console.log(refreshToken);
 
         res.cookie("accessToken", result.accessToken, {
             httpOnly: true,

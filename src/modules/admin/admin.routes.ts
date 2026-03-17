@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { AuthMiddleware } from "../user/user.middleware";
 import { fetchActiveUsers, fetchBlockedUsers, fetchUsers, getAdminProfile, serverStatus } from "./admin.controller";
+import { AuthMiddleware } from "../../middlewares/user.middleware";
 
 const AdminRouter = Router()
 

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { changePassword, forgotPassword, getSession, login, logOut, refreshToken, resendOtp, signup, verifyOtp } from "./user.controller";
-import { DtoMiddleware } from "./user.middleware";
 import { changePasswordDtoSchema, forgotPasswordDtoSchema, getSessionDtoSchema, loginDtoSchema, refreshTokenDtoSchema, reSendOtpDtoSchema, signupDtoSchema, verifyOtpDtoSchema } from "./user.dto";
+import { DtoMiddleware } from "../../middlewares/user.middleware";
 
 const UserRouter = Router()
 

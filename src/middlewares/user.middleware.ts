@@ -1,7 +1,7 @@
-import { catchError, tryError } from "../../utils/serverErrorhandler";
 import { NextFunction, Request, Response } from "express";
 import  jwt, { JwtPayload } from "jsonwebtoken";
-import { SessionInterface } from "./user.interface";
+import { SessionInterface } from "../modules/user/user.interface";
+import { catchError, tryError } from "../utils/serverErrorhandler";
 
 export const DtoMiddleware = (schema: any)=>(req: Request, res: Response, next: NextFunction)=>{
     const result = schema.safeParse(req.body)

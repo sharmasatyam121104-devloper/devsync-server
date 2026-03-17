@@ -54,7 +54,6 @@ export const login = async(body: LoginDto):Promise<LoginResponseInterface>=>{
   }
 
   const isPasswordMatch = await comparePassword(password, existingUser.password)
-  console.log(isPasswordMatch);
 
   if(!isPasswordMatch) {
     throw tryError("Invalid credentials", 400);

@@ -1,15 +1,17 @@
 import { Router } from "express";
 import { changePassword, forgotPassword, getSession, login, logOut, refreshToken, resendOtp, signup, verifyOtp } from "./user.controller";
+import { DtoMiddleware } from "./user.middleware";
+import { changePasswordDtoSchema, forgotPasswordDtoSchema, getSessionDtoSchema, loginDtoSchema, refreshTokenDtoSchema, reSendOtpDtoSchema, signupDtoSchema, verifyOtpDtoSchema } from "./user.dto";
 
 const UserRouter = Router()
 
-UserRouter.post('/signup', signup)
-UserRouter.post('/login', login)
+UserRouter.post('/signup', DtoMiddleware(signupDtoSchema), signup)
+UserRouter.post('/login', DtoMiddleware(loginDtoSchema), login)
 UserRouter.get('/logout', logOut)
-UserRouter.post('/verify-otp', verifyOtp)
-UserRouter.post('/resend-otp', resendOtp)
-UserRouter.post('/forgot-password', forgotPassword)
-UserRouter.post('/change-password', changePassword)
+UserRouter.post('/verify-otp', DtoMiddleware(verifyOtpDtoSchema), verifyOtp)
+UserRouter.post('/resend-otp', DtoMiddleware(reSendOtpDtoSchema), resendOtp)
+UserRouter.post('/forgot-password', DtoMiddleware(forgotPasswordDtoSchema), forgotPassword)
+UserRouter.post('/change-password', DtoMiddleware(changePasswordDtoSchema), changePassword)
 UserRouter.get("/refresh-token", refreshToken)
 UserRouter.get('/session', getSession)
 

@@ -115,6 +115,7 @@ export const refreshToken = async(req: Request, res: Response)=>{
     try {
         const refreshToken = req.cookies.refreshToken
         const result = await userService.refreshToken(refreshToken)
+        console.log(refreshToken);
 
         res.cookie("accessToken", result.accessToken, {
             httpOnly: true,
@@ -142,12 +143,12 @@ export const getSession = async (req: Request, res: Response) => {
 
     const session = await userService.getSession(accessToken)
 
-    return res.json({
-      success: true,
-      session
-    })
+    return res.json(session)
 
   } catch (error) {
     return catchError(error, res)
   }
 }
+
+
+export const getRequestLogs = () => {}

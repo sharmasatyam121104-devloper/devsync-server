@@ -40,6 +40,11 @@ const userSchema = new Schema<UserInterface>(
       type: String,
       enum: ["ADMIN", "USER"],
       default: "USER"
+    },
+    status: {
+      type: String,
+      enum: ["ACTIVE", "BLOCK"],
+      default: "ACTIVE"
     }
   },
   {

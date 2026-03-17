@@ -1,0 +1,15 @@
+import { Router } from "express";
+import { AuthMiddleware } from "../user/user.middleware";
+import { fetchActiveUsers, fetchBlockedUsers, fetchUsers, getAdminProfile, serverStatus } from "./admin.controller";
+
+const AdminRouter = Router()
+
+AdminRouter.get('/users', AuthMiddleware, fetchUsers)
+AdminRouter.get('/active-users', AuthMiddleware, fetchActiveUsers)
+AdminRouter.get('/blocked-users', AuthMiddleware, fetchBlockedUsers)
+
+AdminRouter.get('/server-status', AuthMiddleware, serverStatus)
+
+AdminRouter.get('/admin-profile', AuthMiddleware, getAdminProfile)
+
+export default AdminRouter

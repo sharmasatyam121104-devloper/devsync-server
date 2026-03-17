@@ -5,10 +5,12 @@ import { otpTemplate } from '../../utils/otpTemplate'
 import moment from 'moment'
 import jwt from 'jsonwebtoken'
 import { comparePassword, generateOTP, generateToken, getAccessToken, hashPassword } from './user.util'
+import { ChangePasswordDto, ForgotPasswordDto, GetSessionDto, LoginDto, RefreshTokenDto, ReSendOtpDto, SignupDto, VerifyOtpDto } from './user.dto'
+import { ChangePasswordResponse, ForgotPasswordResponse, GetSessionResponse, LoginResponseInterface, RefreshTokenResponse, ReSendOtpResponse, SignupResponse, VerifyOtpResponse } from './user.interface'
 
 
 
-export const signup = async(body: any) => {
+export const signup = async(body: SignupDto): Promise<SignupResponse> => {
   const { fullname, email, password } = body
 
   const existingUser = await UserModel.findOne({ email })
@@ -42,7 +44,7 @@ export const signup = async(body: any) => {
   }
 }
 
-export const login = async(body: any)=>{
+export const login = async(body: LoginDto):Promise<LoginResponseInterface>=>{
   const {email, password} = body;
 
   const existingUser = await UserModel.findOne({ email })
@@ -75,7 +77,7 @@ export const login = async(body: any)=>{
   }
 }
 
-export const verifyOtp = async(body: any)=>{
+export const verifyOtp = async(body: VerifyOtpDto): Promise<VerifyOtpResponse>=>{
   const {email, otp} = body;
 
   const existingUser = await UserModel.findOne({ email })
@@ -104,7 +106,7 @@ export const verifyOtp = async(body: any)=>{
   }
 }
 
-export const reSendOtp = async(body: any)=>{
+export const reSendOtp = async(body: ReSendOtpDto): Promise<ReSendOtpResponse>=>{
   const {email} = body
   
   const existingUser = await UserModel.findOne({ email })
@@ -127,7 +129,7 @@ export const reSendOtp = async(body: any)=>{
   }
 }
 
-export const forgotPassword = async(body: any)=>{
+export const forgotPassword = async(body: ForgotPasswordDto): Promise<ForgotPasswordResponse>=>{
     const {email} = body
   
   const existingUser = await UserModel.findOne({ email })
@@ -150,7 +152,7 @@ export const forgotPassword = async(body: any)=>{
   }
 }
 
-export const changePassword = async(body: any)=>{
+export const changePassword = async(body: ChangePasswordDto): Promise<ChangePasswordResponse>=>{
   const {email, newPassword, otp} = body
 
   const existingUser = await UserModel.findOne({ email })
@@ -179,7 +181,7 @@ export const changePassword = async(body: any)=>{
 
 }
 
-export const refreshToken = async(refreshToken: string)=>{
+export const refreshToken = async( refreshToken: string ): Promise<RefreshTokenResponse>=>{
   if (!refreshToken) {
     throw tryError("Please provide refresh token.", 400)
   }
@@ -204,12 +206,15 @@ export const refreshToken = async(refreshToken: string)=>{
   }
 }
 
-export const getSession = async(accessToken: string)=>{
+export const getSession = async(accessToken: string): Promise<GetSessionResponse>=>{
   if (!accessToken) {
       throw tryError("Invalid session",401)
   }
 
   const session = await jwt.verify(accessToken, process.env.AUTH_SECRET!)
-  return session
+  return {
+    success: true,
+    session
+  }
   
 }

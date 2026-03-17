@@ -3,6 +3,7 @@ import cors from 'cors'
 import cookieParser from "cookie-parser"
 import {requestLogger} from './utils/logger'
 import UserRouter from "./modules/user/user.routes"
+import AdminRouter from "./modules/admin/admin.routes"
 
 const app = express()
 
@@ -21,5 +22,6 @@ app.get("/", (req, res) => {
 })
 
 app.use('/user',UserRouter)
+app.use('/admin',AdminRouter)
 
 export default app

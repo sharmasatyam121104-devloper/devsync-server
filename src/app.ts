@@ -5,6 +5,7 @@ import {requestLogger} from './utils/logger'
 import UserRouter from "./modules/user/user.routes"
 import AdminRouter from "./modules/admin/admin.routes"
 import ProjectRouter from "./modules/project/project.routes"
+import IssueRouter from "./modules/issue/issue.route"
 
 const app = express()
 
@@ -25,5 +26,6 @@ app.get("/", (req, res) => {
 app.use('/user',UserRouter)
 app.use('/admin',AdminRouter)
 app.use('/project',ProjectRouter)
+app.use('/issue',IssueRouter)
 
 export default app

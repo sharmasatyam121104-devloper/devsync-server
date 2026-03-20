@@ -75,8 +75,15 @@ export const addMembersInProject = async(body: any, projectId:string, role: stri
         );
     }
 
+    if(project.status === "COMPLETED"){
+        throw tryError("Project is already Complted, so you can't change the status.", 400);
+    }
 
     const { emails } = body;
+
+    if(emails.length === 0){
+        throw tryError("Atleast one email are required.", 400);
+    }
 
     const addingRequestMembers = await UserModel.find({
         email: { $in: emails },
@@ -113,5 +120,31 @@ export const addMembersInProject = async(body: any, projectId:string, role: stri
 
     return project;
 
+}
+
+export const changeProjectStatus = async(projectId:string, role: string, id:string)=>{
+    if(role !== "USER"){
+        throw tryError("Unauthorized Access",403)
+    }
+
+    const project = await ProjectModel.findById(projectId)
+
+    if(!project) {
+        throw tryError("Project not found.",404)
+    }
+
+    if (project.createdBy.toString() !== id) {
+        throw tryError(
+        "You are not the lead of this project, only lead can add members",
+        403
+        );
+    }
+
+    if(project.status === "COMPLETED"){
+        throw tryError("Project is already Complted, so you can't change the status.", 400);
+    }
+
+    await ProjectModel.findByIdAndUpdate(projectId, {status: "COMPLETED"})
+    return {message: "project status chaged successfully."}
 }
 

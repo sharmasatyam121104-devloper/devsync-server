@@ -41,3 +41,16 @@ export const addMembersInProject = async(req: SessionInterface, res: Response)=>
         return catchError(error, res)    
     }
 }
+export const changeProjectStatus = async(req: SessionInterface, res: Response)=>{
+    try {
+        const  projectId  = req.params.projectId as string;
+        const body = req.body;
+        const {role, id} = req.session!
+
+        const status = await projectService.changeProjectStatus(projectId, role, id)
+        res.json(status)
+    } 
+    catch (error) {
+        return catchError(error, res)    
+    }
+}

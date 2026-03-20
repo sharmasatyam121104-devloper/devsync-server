@@ -6,6 +6,7 @@ import UserRouter from "./modules/user/user.routes"
 import AdminRouter from "./modules/admin/admin.routes"
 import ProjectRouter from "./modules/project/project.routes"
 import IssueRouter from "./modules/issue/issue.route"
+import ZipRouter from "./modules/zip/zip.routes"
 
 const app = express()
 
@@ -27,5 +28,6 @@ app.use('/user',UserRouter)
 app.use('/admin',AdminRouter)
 app.use('/project',ProjectRouter)
 app.use('/issue',IssueRouter)
+app.use('/zip', ZipRouter)
 
 export default app

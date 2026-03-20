@@ -15,7 +15,7 @@ const zipSchema = new Schema<ZipInterface>(
         type: String, 
         required: true 
     },
-    filseDesciption:{
+    fileDesciption:{
         type: String
     },
     fileSize: { 
@@ -29,6 +29,7 @@ const zipSchema = new Schema<ZipInterface>(
     },
 
     uploadedBy: { type: String, required: true },
+    uploaderName: { type: String, required: true },
   },
   {
     timestamps: true,

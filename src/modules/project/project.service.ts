@@ -46,7 +46,7 @@ export const getProject = async(role: string, id: string)=>{
 
     const projects = await ProjectModel.find({
         "members.userId": userId,
-    });
+    }).populate("members.userId", "email fullname");
 
     if(!projects){
         throw tryError("Project not found.",404)

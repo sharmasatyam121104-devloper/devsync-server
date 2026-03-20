@@ -4,12 +4,13 @@ export interface ZipInterface {
 
   fileName: string;
   fileUrl: string;
-  filseDesciption: string;
+  fileDesciption: string;
 
   fileSize: number; // in bytes
   fileType: "zip";
 
   uploadedBy: string;
+  uploaderName: string;
 
   createdAt: Date;
   updatedAt: Date;

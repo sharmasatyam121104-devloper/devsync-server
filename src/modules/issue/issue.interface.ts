@@ -8,8 +8,8 @@ export interface IssueInterface {
     type: "Bug" | "Task" | "Improvement"; 
     status: "Open" | "In Progress" | "Closed"; 
     priority: "Low" | "Medium" | "High" | "Critical"; 
-    assignedTo?: string;           
-    createdBy: string;             
+    assignedTo?: Types.ObjectId;           
+    createdBy: Types.ObjectId;             
     createdAt: Date;               
     updatedAt: Date;               
     closedAt?: Date;               

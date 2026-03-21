@@ -48,12 +48,14 @@ const issueSchema = new Schema<IssueInterface>({
         default: 'Medium' 
     },
     assignedTo: { 
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: "User",
         default: null 
     },  
     createdBy: { 
-        type: String, 
-        required: true 
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        default: null 
     },
     createdAt: { 
         type: Date,

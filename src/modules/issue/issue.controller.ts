@@ -8,7 +8,7 @@ export const craeteIssue = async(req: SessionInterface, res: Response)=>{
         const projectId = req.params.projectId as string
         const {role, id} = req.session!
         const body = req.body
-        const issue = await ProjectService.craeteIssue(body, projectId, role, id)
+        const issue = await ProjectService.createIssue(body, projectId, role, id)
         res.json(issue)
     } 
     catch (error) {

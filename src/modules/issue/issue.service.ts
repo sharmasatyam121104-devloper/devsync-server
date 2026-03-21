@@ -2,49 +2,59 @@ import { tryError } from "../../utils/serverErrorhandler"
 import ProjectModel from "../project/project.model"
 import { IssueModel } from "./issue.model"
 
-export const craeteIssue = async(body: any, projectId: string, role: string, id: string)=>{
-    if(role !== "USER"){
-        throw tryError("Unauthorized Access",403)
-    }
+export const createIssue = async (body: any, projectId: string, role: string, userId: string) => {
+  if (role !== "USER") {
+    throw tryError("Unauthorized Access", 403);
+  }
 
-    if(!projectId){
-        throw tryError("ProjectId required",400)
-    }
+  if (!projectId) {
+    throw tryError("ProjectId required", 400);
+  }
 
-    const project = await ProjectModel.findById(projectId)
+  const project = await ProjectModel.findById(projectId);
 
-    if(!project) {
-        throw tryError("Project not found",404)
-    }
+  if (!project) {
+    throw tryError("Project not found", 404);
+  }
 
-    const memberIds = project.members.map((member: any) => member.userId.toString())
-    const isMember = memberIds.includes(memberIds.toString())
+  // Check if current user is member of this project
+  const memberIds = project.members.map((member: any) =>
+    member.userId.toString()
+  );
+  const isMember = memberIds.includes(userId);
 
-    if (!isMember) {
-        throw tryError("You can not create issue, you are not the meber of this project!", 403);
-    }
+  if (!isMember) {
+    throw tryError(
+      "You cannot create issue, you are not a member of this project!",
+      403
+    );
+  }
 
-    const {title, description, type, priority, assignedTo} = body
-    const createdBy = id
+  const { title, description, type, priority, assignedTo } = body;
+  const createdBy = userId;
 
-    const isAsigndeMemebr = memberIds.includes(assignedTo.toString())
-    if (!isAsigndeMemebr) {
-        throw tryError("You can not assign  issue to this member , He/She are not the member of this project!", 403);
-    }
+  // Check if assignedTo is a valid project member
+  const isAssignedMember = memberIds.includes(assignedTo.toString());
+  if (!isAssignedMember) {
+    throw tryError(
+      "You cannot assign issue to this member. He/She is not a member of this project!",
+      403
+    );
+  }
 
-    const payload = {
-        projectId,
-        title,
-        description,
-        type,
-        priority: priority || "Medium",
-        assignedTo,
-        createdBy
-    }
+  const payload = {
+    projectId,
+    title,
+    description,
+    type,
+    priority: priority || "Medium",
+    assignedTo,
+    createdBy,
+  };
 
-    await IssueModel.create(payload)
-    return {mesaage: "Issue created sucessfully."}
-}
+  await IssueModel.create(payload);
+  return { message: "Issue created successfully." };
+};
 
 export const getAllIssueOfUser = async(role: string, id: string)=>{
     if(role !== "USER"){
@@ -52,6 +62,16 @@ export const getAllIssueOfUser = async(role: string, id: string)=>{
     }
 
     const yourIssues = await IssueModel.find({$or:[{createdBy: id}, {assignedTo: id}]})
+    .populate("projectId", "projectName")
+    .populate("createdBy", "fullname email")
+    .populate("assignedTo", "fullname email")
+    .populate("comments.user", "fullname email")
+    .sort({createdAt: -1})
+
+
+    if(!yourIssues){
+        throw tryError("Issues not found.",404)
+    }
     return yourIssues
 }
 
@@ -61,6 +81,12 @@ export const getAllActiveIssueOfUser = async(role: string, id: string)=>{
     }
 
     const yourActiveIssues = await IssueModel.find({$or:[{createdBy: id}, {assignedTo: id}], status: "Open"})
+    .populate("projectId", "projectName")
+    .populate("createdBy", "fullname email")
+    .populate("assignedTo", "fullname email")
+    .populate("comments.user", "fullname email")
+    .sort({createdAt: -1})
+
     return yourActiveIssues
 }
 
@@ -70,6 +96,13 @@ export const getAllColseIssueOfUser = async(role: string, id: string)=>{
     }
 
     const yourCloseIssues = await IssueModel.find({$or:[{createdBy: id}, {assignedTo: id}], status: "Closed"})
+    .populate("projectId", "projectName")
+    .populate("createdBy", "fullname email")
+    .populate("assignedTo", "fullname email")
+    .populate("comments.user", "fullname email")
+    .sort({createdAt: -1})
+
+    
     return yourCloseIssues
 }
 

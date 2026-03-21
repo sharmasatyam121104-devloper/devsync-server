@@ -46,7 +46,8 @@ export const getProject = async(role: string, id: string)=>{
 
     const projects = await ProjectModel.find({
         "members.userId": userId,
-    }).populate("members.userId", "email fullname");
+    }).populate("members.userId", "email fullname")
+    .sort({ createdAt: -1 })
 
     if(!projects){
         throw tryError("Project not found.",404)
@@ -135,7 +136,7 @@ export const changeProjectStatus = async(projectId:string, role: string, id:stri
 
     if (project.createdBy.toString() !== id) {
         throw tryError(
-        "You are not the lead of this project, only lead can add members",
+        "You are not the lead of this project, only lead can cahnge status",
         403
         );
     }

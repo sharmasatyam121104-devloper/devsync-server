@@ -20,6 +20,7 @@ const startServer = async () => {
   try {
     await connectDB();
 
+
     app.listen(PORT, () => {
       console.log(`\n${ui.border}`);
       console.log(`${chalk.bgBlue.white.bold(" SYSTEM STATUS ")} ${chalk.green.bold("ONLINE")}`);

@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { changePassword, forgotPassword, getSession, login, logOut, refreshToken, resendOtp, signup, verifyOtp } from "./user.controller";
-import { changePasswordDtoSchema, forgotPasswordDtoSchema, getSessionDtoSchema, loginDtoSchema, refreshTokenDtoSchema, reSendOtpDtoSchema, signupDtoSchema, verifyOtpDtoSchema } from "./user.dto";
-import { DtoMiddleware } from "../../middlewares/user.middleware";
+import { changePassword, forgotPassword, getSession, getUserProfile, login, logOut, refreshToken, resendOtp, signup, verifyOtp } from "./user.controller";
+import { changePasswordDtoSchema, forgotPasswordDtoSchema, loginDtoSchema, refreshTokenDtoSchema, reSendOtpDtoSchema, signupDtoSchema, verifyOtpDtoSchema } from "./user.dto";
+import { AuthMiddleware, DtoMiddleware } from "../../middlewares/user.middleware";
 
 const UserRouter = Router()
 
@@ -14,5 +14,6 @@ UserRouter.post('/forgot-password', DtoMiddleware(forgotPasswordDtoSchema), forg
 UserRouter.post('/change-password', DtoMiddleware(changePasswordDtoSchema), changePassword)
 UserRouter.get("/refresh-token", refreshToken)
 UserRouter.get('/session', getSession)
+UserRouter.get('/user-profile', AuthMiddleware, getUserProfile) 
 
 export default UserRouter

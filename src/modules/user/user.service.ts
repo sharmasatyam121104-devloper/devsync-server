@@ -217,3 +217,13 @@ export const getSession = async(accessToken: string): Promise<GetSessionResponse
   }
   
 }
+
+export const getUserProfile = async(role: string, id: string)=>{
+  if(role !== "USER"){
+    throw tryError("Unauthorized access", 403)
+  }
+
+  const userData = await UserModel.findById(id)
+
+  return userData
+}

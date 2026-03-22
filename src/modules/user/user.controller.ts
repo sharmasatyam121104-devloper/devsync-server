@@ -1,4 +1,5 @@
 import { catchError } from '../../utils/serverErrorhandler'
+import { SessionInterface } from './user.interface'
 import * as userService from './user.service'
 import { Request, Response } from "express"
 
@@ -150,4 +151,18 @@ export const getSession = async (req: Request, res: Response) => {
 }
 
 
-export const getRequestLogs = () => {}
+export const getUserProfile = async (req: SessionInterface, res: Response) => {
+  try {
+
+    const {role, id} = req.session!
+
+    const userData = await userService.getUserProfile(role, id)
+
+    return res.json(userData)
+
+  } catch (error) {
+    return catchError(error, res)
+  }
+}
+
+

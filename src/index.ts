@@ -3,6 +3,7 @@ dotenv.config();
 
 import app from './app'
 import { connectDB } from './config/db';
+import "./modules/mettings/meeting.worker";
 import chalk from 'chalk';
 
 

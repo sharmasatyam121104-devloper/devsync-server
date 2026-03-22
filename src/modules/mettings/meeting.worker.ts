@@ -1,18 +1,19 @@
 import { Worker } from "bullmq";
+import { redisConfig } from "../../config/redis";
+import { handleMeetingReminder } from "./meeting.handler";
 
 const worker = new Worker(
   "meetingQueue",
   async (job) => {
-    console.log("🔥 Job received:", job.name);
-
-    if (job.name === "testJob") {
-      console.log("Message:", job.data.message);
+    switch (job.name) {
+      case "meetingReminder":
+        await handleMeetingReminder(job.data.meetingId);
+        break;
     }
   },
   {
-    connection: {
-      host: process.env.REDIS_HOST,
-      port: Number(process.env.REDIS_PORT),
-    },
+    connection: redisConfig,
   }
 );
+
+export default worker;

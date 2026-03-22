@@ -1,11 +1,20 @@
 import MeetingModel from "./meeting.model";
 import ProjectModel from "../project/project.model";
 import { tryError } from "../../utils/serverErrorhandler";
+import { addMeetingReminderJob } from "./meeting.job";
 
 export const createMeeting = async (id: string, role: string, body: any) => {
   const { projectId, title, description, dateTime, meetingLink } = body;
 
-  // 1. Project check
+  const meetingTime = new Date(dateTime);
+  const now = new Date();
+
+  // 1. Past date check
+  if (meetingTime <= now) {
+    throw tryError("Meeting time must be in the future", 400);
+  }
+
+  // 2. Project check
   const project = await ProjectModel.findById(projectId);
   if (!project) throw tryError("Project not found", 404);
 
@@ -13,7 +22,7 @@ export const createMeeting = async (id: string, role: string, body: any) => {
     throw tryError("Project is not active", 403);
   }
 
-  // 2. Member check
+  // 3. Member check
   const member = project.members.find(
     (m: any) => m.userId.toString() === id
   );
@@ -24,10 +33,29 @@ export const createMeeting = async (id: string, role: string, body: any) => {
     throw tryError("Only LEAD can create meeting", 403);
   }
 
-  // 3. Participants snapshot
+  //  4. Conflict check (±1 hour)
+  const start = new Date(meetingTime.getTime() - 60 * 60 * 1000);
+  const end = new Date(meetingTime.getTime() + 60 * 60 * 1000);
+
+  const existingMeeting = await MeetingModel.findOne({
+    projectId,
+    dateTime: {
+      $gte: start,
+      $lte: end,
+    },
+  });
+
+  if (existingMeeting) {
+    throw tryError(
+      "Another meeting exists within 1 hour of this time",
+      400
+    );
+  }
+
+  // 5. Participants snapshot
   const participants = project.members.map((m: any) => m.userId);
 
-  // 4. Create meeting
+  // 6. Create meeting
   const meeting = await MeetingModel.create({
     title,
     description,
@@ -38,7 +66,11 @@ export const createMeeting = async (id: string, role: string, body: any) => {
     meetingLink,
   });
 
-  //  NEXT: BullMQ job yaha add hoga (baad me karenge)
+  // 7. Add queue job
+  await addMeetingReminderJob(
+    meeting._id.toString(),
+    dateTime
+  );
 
   return {
     success: true,
@@ -55,8 +87,21 @@ export const getMeetings = async (id: string, role: string) => {
     dateTime: { $gte: now },
   }).sort({ dateTime: 1 });
 
+  //  Transform response
+  const formattedMeetings = meetings.map((meeting) => ({
+    _id: meeting._id,
+    title: meeting.title,
+    description: meeting.description,
+    dateTime: meeting.dateTime,
+    joinEnabled: meeting.joinEnabled,
+
+    // MAIN LOGIC
+    meetingLink: meeting.joinEnabled ? meeting.meetingLink : null,
+  }));
+
   return {
     success: true,
-    meetings,
+    meetings: formattedMeetings,
   };
 };
+

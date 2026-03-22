@@ -1,7 +1,7 @@
 import UserModel from './user.model'
 import { tryError } from '../../utils/serverErrorhandler'
 import sendMail from '../../utils/sendEmail'
-import { otpTemplate } from '../../utils/otpTemplate'
+import { otpTemplate } from '../../templates/otpTemplate'
 import moment from 'moment'
 import jwt from 'jsonwebtoken'
 import { comparePassword, generateOTP, generateToken, getAccessToken, hashPassword } from './user.util'

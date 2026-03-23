@@ -11,6 +11,7 @@ import { apiLogger } from "./middlewares/apiLogger"
 import ApiLogRouter from "./modules/apiLog/apiLog.routes"
 import MeetingRouter from "./modules/mettings/meeting.routes"
 import DashboardRouter from "./modules/dashboard/dashboard.route"
+import MessageRouter from "./modules/message/mesasge.route"
 
 const app = express()
 
@@ -37,5 +38,6 @@ app.use('/zip', ZipRouter)
 app.use('/meeting', MeetingRouter)
 app.use("/api-logs", ApiLogRouter);
 app.use("/dashboard", DashboardRouter);
+app.use('/message', MessageRouter)
 
 export default app

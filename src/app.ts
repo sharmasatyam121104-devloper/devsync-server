@@ -10,6 +10,7 @@ import ZipRouter from "./modules/zip/zip.routes"
 import { apiLogger } from "./middlewares/apiLogger"
 import ApiLogRouter from "./modules/apiLog/apiLog.routes"
 import MeetingRouter from "./modules/mettings/meeting.routes"
+import DashboardRouter from "./modules/dashboard/dashboard.route"
 
 const app = express()
 
@@ -35,5 +36,6 @@ app.use('/issue',IssueRouter)
 app.use('/zip', ZipRouter)
 app.use('/meeting', MeetingRouter)
 app.use("/api-logs", ApiLogRouter);
+app.use("/dashboard", DashboardRouter);
 
 export default app

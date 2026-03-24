@@ -28,6 +28,19 @@ export const getProject = async(req: SessionInterface, res: Response)=>{
     }
 }
 
+export const getSingleProject = async(req: SessionInterface, res: Response)=>{
+    try {
+        const {role, id} = req.session!
+        const projectId = req.params.projectId as string
+
+        const project = await projectService.getSingleProject(role, id, projectId)
+        res.json(project)
+    } 
+    catch (error) {
+        return catchError(error, res)    
+    }
+}
+
 export const addMembersInProject = async(req: SessionInterface, res: Response)=>{
     try {
         const  projectId  = req.params.projectId as string;

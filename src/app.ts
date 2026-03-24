@@ -12,14 +12,14 @@ import ApiLogRouter from "./modules/apiLog/apiLog.routes"
 import MeetingRouter from "./modules/mettings/meeting.routes"
 import DashboardRouter from "./modules/dashboard/dashboard.route"
 import MessageRouter from "./modules/message/mesasge.route"
+import { createServer } from "http"
+import corsConfig from "./utils/cors"
 
 const app = express()
+const server = createServer(app)
 
 
-app.use(cors({
-  origin: process.env.CLIENT,
-  credentials: true
-}))
+app.use(cors(corsConfig))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
@@ -40,4 +40,4 @@ app.use("/api-logs", ApiLogRouter);
 app.use("/dashboard", DashboardRouter);
 app.use('/message', MessageRouter)
 
-export default app
+export default server

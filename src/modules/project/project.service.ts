@@ -57,6 +57,22 @@ export const getProject = async(role: string, id: string)=>{
 
 }
 
+export const getSingleProject = async(role: string, id: string, projectId: string)=>{
+    if(role !== "USER"){
+        throw tryError("Unauthorized Access",403)
+    }
+
+    const project = ProjectModel.findById(projectId)
+
+    
+    if(!project){
+        throw tryError("Project not found.",404)
+    }
+
+    return project
+
+}
+
 
 export const addMembersInProject = async(body: any, projectId:string, role: string, id:string)=>{
     if(role !== "USER"){

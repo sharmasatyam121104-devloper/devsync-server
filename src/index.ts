@@ -1,10 +1,11 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import app from './app'
 import { connectDB } from './config/db';
 import "./modules/mettings/meeting.worker";
+import "./socket"
 import chalk from 'chalk';
+import server from './app';
 
 
 const PORT: string | number = process.env.PORT || 8080;
@@ -22,7 +23,7 @@ const startServer = async () => {
     await connectDB();
 
 
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`\n${ui.border}`);
       console.log(`${chalk.bgBlue.white.bold(" SYSTEM STATUS ")} ${chalk.green.bold("ONLINE")}`);
       console.log(`${ui.border}`);

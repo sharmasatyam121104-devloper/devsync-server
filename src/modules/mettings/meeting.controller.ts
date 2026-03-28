@@ -27,3 +27,16 @@ export const getMeetings = async (req: SessionInterface, res: Response) => {
         return catchError(error, res)
     }
 };
+
+
+export const getSingleMeeting = async (req: SessionInterface, res: Response) => {
+    try {
+        const {id, role} = req.session!
+        const meetingId = req.params.meetingId as string
+        const meeting = await MeetingService.getSingleMeeting(id, role, meetingId);
+        res.json(meeting);
+    }
+    catch (error) {
+        return catchError(error, res)
+    }
+};

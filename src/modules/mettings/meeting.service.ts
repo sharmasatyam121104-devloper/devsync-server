@@ -111,7 +111,9 @@ export const getSingleMeeting = async (id: string, role: string, meetingId: stri
   const meeting = await MeetingModel.findOne({
     _id: meetingId,
     dateTime: { $gte: now },
-  }).populate("participants", "fullname email")
+  })
+  .populate("participants", "fullname email")
+  .populate("projectId", "projectName")
 
   if(!meeting){
     throw tryError("Meeting not found", 404)

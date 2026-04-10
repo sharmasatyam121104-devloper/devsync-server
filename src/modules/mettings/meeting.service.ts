@@ -62,8 +62,7 @@ export const createMeeting = async (id: string, role: string, body: any) => {
     projectId,
     createdBy: id,
     participants,
-    dateTime,
-    meetingLink,
+    dateTime
   });
 
   // 7. Add queue job

@@ -10,7 +10,6 @@ export interface IMeeting {
   participants: string[];
 
   dateTime: Date;
-  meetingLink: string;
 
   joinEnabled: boolean; 
   notified: boolean; 

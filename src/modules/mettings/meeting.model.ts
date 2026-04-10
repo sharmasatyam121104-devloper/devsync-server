@@ -41,12 +41,6 @@ const MeetingSchema = new Schema<IMeeting>(
       index: true,
     },
 
-    meetingLink: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
     joinEnabled: {
       type: Boolean,
       default: false,

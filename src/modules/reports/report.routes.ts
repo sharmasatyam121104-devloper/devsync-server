@@ -5,7 +5,7 @@ import { AuthMiddleware } from "../../middlewares/user.middleware";
 const ReportRouter = Router()
 
 ReportRouter.post('/', AuthMiddleware, createReport)
-ReportRouter.delete('/', AuthMiddleware, deleteReport)
+ReportRouter.delete('/:reportId', AuthMiddleware, deleteReport)
 ReportRouter.put('/', AuthMiddleware, updateReport)
 ReportRouter.get('/', AuthMiddleware, getMyReports)
 

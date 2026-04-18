@@ -20,8 +20,8 @@ export const deleteReport = async(req: SessionInterface, res: Response)=>{
     try {
         const role = req?.session?.role as string
         const id = req?.session?.id as string
-        const body = req.body
-        const report = await ReportService.deletereport(role, id, body)
+        const reportId = req.params.reportId as string
+        const report = await ReportService.deletereport(role, id, reportId)
         res.json(report)
     } 
     catch (error) {

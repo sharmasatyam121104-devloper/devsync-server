@@ -72,13 +72,12 @@ export const createReport = async(role: string, id: string, body: any)=>{
     return {message: "Report creted successfully."}
 }
 
-export const deletereport = async(role: string, id: string, body: any)=>{
+export const deletereport = async(role: string, id: string, reportId: string)=>{
     if(role !== "USER"){
         throw tryError("Unauthorized Access", 401)
     }
 
     const userId = id
-    const reportId = body?.reportId
 
     if(!reportId){
         throw tryError("Report id is required",400)

@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import { createClient } from "redis";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -23,13 +24,8 @@ export const redisConfig = (() => {
   try {
     const { REDIS_HOST, REDIS_PORT } = process.env;
 
-    if (!REDIS_HOST) {
-      throw new Error("REDIS_HOST is missing");
-    }
-
-    if (!REDIS_PORT) {
-      throw new Error("REDIS_PORT is missing");
-    }
+    if (!REDIS_HOST) throw new Error("REDIS_HOST is missing");
+    if (!REDIS_PORT) throw new Error("REDIS_PORT is missing");
 
     const port = Number(REDIS_PORT);
 
@@ -43,14 +39,45 @@ export const redisConfig = (() => {
 
     log.success(`Redis Config Loaded → ${REDIS_HOST}:${port}`);
 
-    return {
-      host: REDIS_HOST,
-      port,
-    };
+    return { host: REDIS_HOST, port };
   } catch (error) {
-    if (error instanceof Error){
+    if (error instanceof Error) {
       log.error(error.message);
     }
     process.exit(1);
   }
 })();
+
+const redisClient = createClient({
+  url: `redis://${redisConfig.host}:${redisConfig.port}`,
+});
+
+//  Better logging
+redisClient.on("error", (err) => {
+  log.error(`Redis Error: ${err.message}`);
+});
+
+redisClient.on("reconnecting", () => {
+  log.info("Redis reconnecting...");
+});
+
+redisClient.on("ready", () => {
+  log.success("Redis Connected");
+});
+
+
+
+export const connectRedis = async () => {
+  try {
+    await redisClient.connect();
+  } catch (error) {
+    if (error instanceof Error) {
+      log.error(`Failed to connect Redis: ${error.message}`);
+    }
+    // process.exit(1);
+
+    log.info("Running app without Redis...");
+  }
+};
+
+export default redisClient;

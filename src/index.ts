@@ -6,6 +6,7 @@ import "./modules/mettings/meeting.worker";
 import "./socket"
 import chalk from 'chalk';
 import server from './app';
+import { connectRedis } from './config/redis';
 
 
 const PORT: string | number = process.env.PORT || 8080;
@@ -20,6 +21,7 @@ const ui = {
 
 const startServer = async () => {
   try {
+    await connectRedis()
     await connectDB();
 
 

@@ -28,3 +28,16 @@ export const deleteReport = async(req: SessionInterface, res: Response)=>{
         return catchError(error, res)    
     }
 }
+
+export const updateReport = async(req: SessionInterface, res: Response)=>{
+    try {
+        const role = req?.session?.role as string
+        const id = req?.session?.id as string
+        const body = req.body
+        const report = await ReportService.updateReport(role, id, body)
+        res.json(report)
+    } 
+    catch (error) {
+        return catchError(error, res)    
+    }
+}

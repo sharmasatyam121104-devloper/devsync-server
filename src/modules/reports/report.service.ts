@@ -104,3 +104,42 @@ export const deletereport = async(role: string, id: string, body: any)=>{
 
     return {message: "Report deleted sucessfully."}
 }
+
+export const updateReport = async(role: string, id: string, body: any)=>{
+    if(role !== "ADMIN"){
+        throw tryError("Unauthorized Access", 401)
+    }
+
+    const reportId = body?.reportId
+    if(!reportId){
+        throw tryError("Report id is required",400)
+    }
+
+    const report = await ReportModel.findById(reportId)
+    if(!report){
+        throw tryError("Report not found.", 404)
+    }
+
+    const status = body?.status
+    if(!status){
+        throw tryError("Status is required", 400)
+    }
+
+    if(status === report.status){
+        throw tryError("Status is already the same", 400)
+    }
+
+    if(status !== "approved" && status !== "rejected"){
+        throw tryError("Only 'approved' and 'rejected' status are allowed", 400)
+    }
+
+    const updatedReport = await ReportModel.findByIdAndUpdate(reportId, {status})
+    //update in user model also
+    // if(updateReport.
+    // status === "approved"){
+
+    // }
+
+    return {message: `Status change to ${status}.`}
+}
+

@@ -14,6 +14,7 @@ import DashboardRouter from "./modules/dashboard/dashboard.route"
 import MessageRouter from "./modules/message/mesasge.route"
 import { createServer } from "http"
 import corsConfig from "./utils/cors"
+import ReportRouter from "./modules/reports/report.routes"
 
 const app = express()
 const server = createServer(app)
@@ -39,5 +40,6 @@ app.use('/meeting', MeetingRouter)
 app.use("/api-logs", ApiLogRouter);
 app.use("/dashboard", DashboardRouter);
 app.use('/message', MessageRouter)
+app.use('/report', ReportRouter)
 
 export default server

@@ -1,17 +1,16 @@
 import { model, Schema } from "mongoose";
 import { ReportInterface } from "./reports.interface";
 import { models } from "mongoose";
-import { timeStamp } from "node:console";
 
 const reportSchema = new Schema<ReportInterface>({
     reporter: {
-        types: Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "User",
         required: true
     },
 
     reportedUser: {
-        types: Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "User",
         required: true 
     },

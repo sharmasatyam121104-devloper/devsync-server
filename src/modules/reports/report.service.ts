@@ -72,3 +72,35 @@ export const createReport = async(role: string, id: string, body: any)=>{
     return {message: "Report creted successfully."}
 }
 
+export const deletereport = async(role: string, id: string, body: any)=>{
+    if(role !== "USER"){
+        throw tryError("Unauthorized Access", 401)
+    }
+
+    const userId = id
+    const reportId = body?.reportId
+
+    if(!reportId){
+        throw tryError("Report id is required",400)
+    }
+
+    const report = await ReportModel.findById(reportId)
+
+    if(!report){
+        throw tryError("Report not found.", 404)
+    }
+
+    const reportStatus = report.status
+
+    if(reportStatus !== "pending"){
+        throw tryError("Report has already been processed by admin. Deletion is not allowed..", 403)
+    }
+
+    if(report.reporter.toString() !== userId.toString()){
+        throw tryError("You are not allowed to delete this report", 403)
+    }
+
+    await ReportModel.findByIdAndDelete(reportId)
+
+    return {message: "Report deleted sucessfully."}
+}

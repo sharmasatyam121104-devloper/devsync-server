@@ -4,6 +4,7 @@ import checkDiskSpace from "check-disk-space";
 import { tryError } from "../../utils/serverErrorhandler"
 import UserModel from "../user/user.model"
 import { formatBytes, formatUptime } from "./admin.utils";
+import ReportModel from "../reports/reports.model";
 
 export const fetchUser = async(role: any) => {
     if(role !== "ADMIN"){
@@ -127,4 +128,25 @@ export const getAdminProfile = async(role: string,id: string) => {
     const adminProfile = await UserModel.findById(id).select("fullname email verify createdAt status")
 
     return adminProfile
+}
+
+export const getAllReports = async(role: string, page: number, limit: number)=>{
+    if(role !== "ADMIN"){
+        throw tryError("Unauthorized Access",403)
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [reports, total] = await Promise.all([
+        ReportModel.find()
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .populate("reportedUser", "_id fullname eamil status").
+        populate("reporter", "_id fullname eamil status"),
+
+        ReportModel.countDocuments(),
+    ]);
+
+    return {reports, total}
 }

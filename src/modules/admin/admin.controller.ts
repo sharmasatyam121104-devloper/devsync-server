@@ -60,3 +60,17 @@ export const getAdminProfile = async(req: SessionInterface, res: Response)=>{
         return catchError(error, res)    
     }
 }
+
+export const getAllReports = async(req: SessionInterface, res: Response)=>{
+    try {
+        const {role,id} = req?.session!
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+        
+        const reports = await adminService.getAllReports(role, page, limit)
+        res.json(reports)
+    } 
+    catch (error) {
+        return catchError(error, res)    
+    }
+}

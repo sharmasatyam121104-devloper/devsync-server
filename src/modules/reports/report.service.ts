@@ -143,3 +143,14 @@ export const updateReport = async(role: string, id: string, body: any)=>{
     return {message: `Status change to ${status}.`}
 }
 
+export const getMyReports = async(role: string, id: string)=>{
+    if(role !== "USER"){
+        throw tryError("Unauthorized Access", 401)
+    }
+
+    const userId = id
+
+    const reports = await ReportModel.find({reporter: userId}).populate("reportedUser", "_id fullname eamil status")
+
+    return reports
+}

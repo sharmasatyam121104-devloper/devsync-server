@@ -122,3 +122,17 @@ export const getAdminDashboard = async(req: SessionInterface, res: Response)=>{
         return catchError(error, res)    
     }
 }
+
+export const getAdminAnalytics = async(req: SessionInterface, res: Response)=>{
+    try {
+        const {role} = req?.session!
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+        
+        const analytics = await adminService.getAdminAnalytics(role)
+        res.json(analytics)
+    } 
+    catch (error) {
+        return catchError(error, res)    
+    }
+}

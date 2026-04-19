@@ -293,3 +293,64 @@ export const getAdminDashboard = async (role: string) => {
     }
   }
 }
+
+
+
+export const getAdminAnalytics = async (role: string) => {
+  if (role !== "ADMIN") {
+    throw tryError("Unauthorized Access", 403)
+  }
+
+  //  USER GROWTH (last 7 days)
+  const userGrowth = await UserModel.aggregate([
+    {
+      $match: { role: "USER" }
+    },
+    {
+      $group: {
+        _id: {
+          $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
+        },
+        count: { $sum: 1 }
+      }
+    },
+    { $sort: { _id: 1 } }
+  ])
+
+  //  ISSUES STATUS
+  const issueStats = await IssueModel.aggregate([
+    {
+      $group: {
+        _id: "$status",
+        count: { $sum: 1 }
+      }
+    }
+  ])
+
+  //  REPORTS STATUS
+  const reportStats = await ReportModel.aggregate([
+    {
+      $group: {
+        _id: "$status",
+        count: { $sum: 1 }
+      }
+    }
+  ])
+
+  // PROJECT STATUS
+  const projectStats = await ProjectModel.aggregate([
+    {
+      $group: {
+        _id: "$status",
+        count: { $sum: 1 }
+      }
+    }
+  ])
+
+  return {
+    userGrowth,
+    issueStats,
+    reportStats,
+    projectStats
+  }
+}

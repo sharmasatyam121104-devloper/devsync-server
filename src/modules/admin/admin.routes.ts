@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { fetchActiveUsers, fetchBlockedUsers, fetchUsers, getAdminDashboard, getAdminProfile, getAllIssues, getAllProjects, getAllReports, serverStatus } from "./admin.controller";
+import { fetchActiveUsers, fetchBlockedUsers, fetchUsers, getAdminAnalytics, getAdminDashboard, getAdminProfile, getAllIssues, getAllProjects, getAllReports, serverStatus } from "./admin.controller";
 import { AuthMiddleware } from "../../middlewares/user.middleware";
 
 const AdminRouter = Router()
@@ -19,5 +19,7 @@ AdminRouter.get('/projects', AuthMiddleware, getAllProjects)
 AdminRouter.get('/issues', AuthMiddleware, getAllIssues)
 
 AdminRouter.get('/dashboard', AuthMiddleware, getAdminDashboard)
+
+AdminRouter.get('/analytics', AuthMiddleware, getAdminAnalytics)
 
 export default AdminRouter

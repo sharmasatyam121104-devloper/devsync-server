@@ -6,7 +6,9 @@ import { SessionInterface } from "../user/user.interface"
 export const fetchUsers = async(req: SessionInterface, res: Response)=>{
     try {
         const {role} = req.session!
-        const users = await adminService.fetchUser(role)
+        const page = Number(req.query.page) || 1
+        const limit = Number(req.query.limit) || 1
+        const users = await adminService.fetchUser(role, page, limit)
         res.json(users)
     } 
     catch (error) {
@@ -18,7 +20,9 @@ export const fetchUsers = async(req: SessionInterface, res: Response)=>{
 export const fetchActiveUsers = async(req: SessionInterface, res: Response)=>{
     try {
         const {role} = req.session!
-        const activeUsers = await adminService.fetchActiveUser(role)
+        const page = Number(req.query.page) || 1
+        const limit = Number(req.query.limit) || 1
+        const activeUsers = await adminService.fetchActiveUser(role, page, limit)
         res.json(activeUsers)
     } 
     catch (error) {
@@ -30,7 +34,9 @@ export const fetchActiveUsers = async(req: SessionInterface, res: Response)=>{
 export const fetchBlockedUsers = async(req: SessionInterface, res: Response)=>{
     try {
         const {role} = req.session!
-        const blockedUsers = await adminService.fetchBlockedUser(role)
+        const page = Number(req.query.page) || 1
+        const limit = Number(req.query.limit) || 1
+        const blockedUsers = await adminService.fetchBlockedUser(role, page, limit)
         res.json(blockedUsers)
     } 
     catch (error) {

@@ -6,42 +6,54 @@ import UserModel from "../user/user.model"
 import { formatBytes, formatUptime } from "./admin.utils";
 import ReportModel from "../reports/reports.model";
 
-export const fetchUser = async(role: any) => {
+export const fetchUser = async(role: any, page: number, limit: number) => {
     if(role !== "ADMIN"){
         throw tryError("Unauthorized Access",403)
     }
 
+    const skip = (page-1) * limit
+
     const users = await UserModel.find({role: "USER"})
     .select("fullname email verify createdAt status")
+    .skip(skip)
+    .limit(limit)
 
     return users
 }
 
-export const fetchActiveUser = async(role: any) => {
+export const fetchActiveUser = async(role: any, page: number, limit: number) => {
     if(role !== "ADMIN"){
         throw tryError("Unauthorized Access",403)
     }
+
+    const skip = (page-1) * limit
 
     const activeUsers = await UserModel.find({
         role: "USER",
         status: "ACTIVE"
     })
     .select("fullname email verify createdAt status")
+    .skip(skip)
+    .limit(limit)
 
     return activeUsers
 }
 
-export const fetchBlockedUser = async(role: any) => {
+export const fetchBlockedUser = async(role: any, page: number, limit: number) => {
     if(role !== "ADMIN"){
         throw tryError("Unauthorized Access",403)
     }
+
+    const skip = (page-1) * limit
 
     const blockUsers = await UserModel.find({
         role: "USER",
         status: "BLOCK"
     })
     .select("fullname email verify createdAt status")
-
+    .skip(skip)
+    .limit(limit)    
+    
     return blockUsers
 }
 

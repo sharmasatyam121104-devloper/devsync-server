@@ -94,3 +94,17 @@ export const getAllProjects = async(req: SessionInterface, res: Response)=>{
         return catchError(error, res)    
     }
 }
+
+export const getAllIssues = async(req: SessionInterface, res: Response)=>{
+    try {
+        const {role} = req?.session!
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+        
+        const issues = await adminService.getAllIssues(role, page, limit)
+        res.json(issues)
+    } 
+    catch (error) {
+        return catchError(error, res)    
+    }
+}

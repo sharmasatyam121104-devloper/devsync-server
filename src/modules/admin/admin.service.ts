@@ -6,6 +6,7 @@ import UserModel from "../user/user.model"
 import { formatBytes, formatUptime } from "./admin.utils";
 import ReportModel from "../reports/reports.model";
 import ProjectModel from "../project/project.model";
+import { IssueModel } from "../issue/issue.model";
 
 export const fetchUser = async(role: any, page: number, limit: number) => {
     if(role !== "ADMIN"){
@@ -187,7 +188,7 @@ export const getAllProjects = async(role: string, page: number, limit: number)=>
 
     const skip = (page - 1) * limit;
 
-    const [reports, total] = await Promise.all([
+    const [Projects, total] = await Promise.all([
         ProjectModel.find()
         .skip(skip)
         .limit(limit)
@@ -198,5 +199,26 @@ export const getAllProjects = async(role: string, page: number, limit: number)=>
         ProjectModel.countDocuments(),
     ]);
 
-    return {reports, total}
+    return {Projects, total}
+}
+
+
+export const getAllIssues = async(role: string, page: number, limit: number)=>{
+    if(role !== "ADMIN"){
+        throw tryError("Unauthorized Access",403)
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [Issues, total] = await Promise.all([
+        IssueModel.find()
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .populate("projectId"),
+
+        IssueModel.countDocuments(),
+    ]);
+
+    return {Issues, total}
 }

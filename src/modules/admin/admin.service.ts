@@ -5,6 +5,7 @@ import { tryError } from "../../utils/serverErrorhandler"
 import UserModel from "../user/user.model"
 import { formatBytes, formatUptime } from "./admin.utils";
 import ReportModel from "../reports/reports.model";
+import ProjectModel from "../project/project.model";
 
 export const fetchUser = async(role: any, page: number, limit: number) => {
     if(role !== "ADMIN"){
@@ -13,12 +14,16 @@ export const fetchUser = async(role: any, page: number, limit: number) => {
 
     const skip = (page-1) * limit
 
-    const users = await UserModel.find({role: "USER"})
-    .select("fullname email verify createdAt status")
-    .skip(skip)
-    .limit(limit)
+    const [users, total] = await Promise.all([
+        UserModel.find({ role: "USER" })
+            .select("fullname email verify createdAt status")
+            .skip(skip)
+            .limit(limit),
 
-    return users
+        UserModel.countDocuments({ role: "USER" })
+    ])
+
+    return {users, totalUser: total}
 }
 
 export const fetchActiveUser = async(role: any, page: number, limit: number) => {
@@ -28,15 +33,21 @@ export const fetchActiveUser = async(role: any, page: number, limit: number) => 
 
     const skip = (page-1) * limit
 
-    const activeUsers = await UserModel.find({
+    const filter = {
         role: "USER",
         status: "ACTIVE"
-    })
-    .select("fullname email verify createdAt status")
-    .skip(skip)
-    .limit(limit)
+    }
 
-    return activeUsers
+    const [activeUsers, total] = await Promise.all([
+        UserModel.find(filter)
+            .select("fullname email verify createdAt status")
+            .skip(skip)
+            .limit(limit),
+
+        UserModel.countDocuments(filter)
+    ])
+
+    return {activeUsers, totalActiveUsers: total}
 }
 
 export const fetchBlockedUser = async(role: any, page: number, limit: number) => {
@@ -44,17 +55,23 @@ export const fetchBlockedUser = async(role: any, page: number, limit: number) =>
         throw tryError("Unauthorized Access",403)
     }
 
-    const skip = (page-1) * limit
-
-    const blockUsers = await UserModel.find({
+    const filter = {
         role: "USER",
         status: "BLOCK"
-    })
-    .select("fullname email verify createdAt status")
-    .skip(skip)
-    .limit(limit)    
+    }
+
+    const skip = (page-1) * limit
+
+    const [blockedUsers, total] = await Promise.all([
+        UserModel.find(filter)
+            .select("fullname email verify createdAt status")
+            .skip(skip)
+            .limit(limit),
+
+        UserModel.countDocuments(filter)
+    ])  
     
-    return blockUsers
+    return {blockedUsers, totalBlockeduser:total}
 }
 
 
@@ -158,6 +175,27 @@ export const getAllReports = async(role: string, page: number, limit: number)=>{
         populate("reporter", "_id fullname eamil status"),
 
         ReportModel.countDocuments(),
+    ]);
+
+    return {reports, total}
+}
+
+export const getAllProjects = async(role: string, page: number, limit: number)=>{
+    if(role !== "ADMIN"){
+        throw tryError("Unauthorized Access",403)
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [reports, total] = await Promise.all([
+        ProjectModel.find()
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .populate("createdBy", "_id fullname eamil status").
+        populate("members.userId", "_id fullname eamil status"),
+
+        ProjectModel.countDocuments(),
     ]);
 
     return {reports, total}

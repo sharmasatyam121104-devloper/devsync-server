@@ -7,7 +7,7 @@ export const fetchUsers = async(req: SessionInterface, res: Response)=>{
     try {
         const {role} = req.session!
         const page = Number(req.query.page) || 1
-        const limit = Number(req.query.limit) || 1
+        const limit = Number(req.query.limit) || 10
         const users = await adminService.fetchUser(role, page, limit)
         res.json(users)
     } 
@@ -21,7 +21,7 @@ export const fetchActiveUsers = async(req: SessionInterface, res: Response)=>{
     try {
         const {role} = req.session!
         const page = Number(req.query.page) || 1
-        const limit = Number(req.query.limit) || 1
+        const limit = Number(req.query.limit) || 10
         const activeUsers = await adminService.fetchActiveUser(role, page, limit)
         res.json(activeUsers)
     } 
@@ -35,7 +35,7 @@ export const fetchBlockedUsers = async(req: SessionInterface, res: Response)=>{
     try {
         const {role} = req.session!
         const page = Number(req.query.page) || 1
-        const limit = Number(req.query.limit) || 1
+        const limit = Number(req.query.limit) || 10
         const blockedUsers = await adminService.fetchBlockedUser(role, page, limit)
         res.json(blockedUsers)
     } 
@@ -75,6 +75,20 @@ export const getAllReports = async(req: SessionInterface, res: Response)=>{
         
         const reports = await adminService.getAllReports(role, page, limit)
         res.json(reports)
+    } 
+    catch (error) {
+        return catchError(error, res)    
+    }
+}
+
+export const getAllProjects = async(req: SessionInterface, res: Response)=>{
+    try {
+        const {role} = req?.session!
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+        
+        const projects = await adminService.getAllProjects(role, page, limit)
+        res.json(projects)
     } 
     catch (error) {
         return catchError(error, res)    

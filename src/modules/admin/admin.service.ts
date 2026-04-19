@@ -222,3 +222,74 @@ export const getAllIssues = async(role: string, page: number, limit: number)=>{
 
     return {Issues, total}
 }
+
+
+export const getAdminDashboard = async (role: string) => {
+  if (role !== "ADMIN") {
+    throw tryError("Unauthorized Access", 403)
+  }
+
+  // Parallel queries (fast)
+  const [
+    totalUsers,
+    activeUsers,
+    blockedUsers,
+    totalProjects,
+    totalIssues,
+    totalReports,
+
+    recentUsers,
+    recentProjects,
+    recentIssues,
+    recentReports
+  ] = await Promise.all([
+
+    // Counts
+    UserModel.countDocuments({ role: "USER" }),
+    UserModel.countDocuments({ role: "USER", status: "ACTIVE" }),
+    UserModel.countDocuments({ role: "USER", status: "BLOCK" }),
+
+    ProjectModel.countDocuments(),
+    IssueModel.countDocuments(),
+    ReportModel.countDocuments(),
+
+    // Recent Data (last 5)
+    UserModel.find({ role: "USER" })
+      .select("fullname email status createdAt")
+      .sort({ createdAt: -1 })
+      .limit(5),
+
+    ProjectModel.find()
+      .select("projectName status createdAt")
+      .sort({ createdAt: -1 })
+      .limit(5),
+
+    IssueModel.find()
+      .select("title status priority createdAt")
+      .sort({ createdAt: -1 })
+      .limit(5),
+
+    ReportModel.find()
+      .select("reason status createdAt")
+      .sort({ createdAt: -1 })
+      .limit(5),
+  ])
+
+  return {
+    stats: {
+      totalUsers,
+      activeUsers,
+      blockedUsers,
+      totalProjects,
+      totalIssues,
+      totalReports,
+    },
+
+    recent: {
+      users: recentUsers,
+      projects: recentProjects,
+      issues: recentIssues,
+      reports: recentReports,
+    }
+  }
+}

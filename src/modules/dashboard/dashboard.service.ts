@@ -5,7 +5,7 @@ import ProjectModel from "../project/project.model";
 export const getDashboardData = async (userId: string, role: string) => {
   const now = new Date();
 
-  // 🔥 Parallel execution (FAST)
+  //  Parallel execution (FAST)
   const [
     totalProjects,
     activeProjects,
@@ -34,7 +34,7 @@ export const getDashboardData = async (userId: string, role: string) => {
       dateTime: { $gte: now },
     }),
 
-    // 🔥 Recent Projects (last 3)
+    //  Recent Projects (last 3)
     ProjectModel.find({
       "members.userId": userId,
     })
@@ -42,7 +42,7 @@ export const getDashboardData = async (userId: string, role: string) => {
       .limit(3)
       .select("projectName status createdAt"),
 
-    // 🔥 Upcoming Meetings (next 3)
+    //  Upcoming Meetings (next 3)
     MeetingModel.find({
       participants: userId,
       dateTime: { $gte: now },
@@ -51,7 +51,7 @@ export const getDashboardData = async (userId: string, role: string) => {
       .limit(3)
       .select("title dateTime joinEnabled"),
 
-    // 🔥 Recent Issues (last 3)
+    //  Recent Issues (last 3)
     IssueModel.find({
       assignedTo: userId,
     })
@@ -60,7 +60,7 @@ export const getDashboardData = async (userId: string, role: string) => {
       .select("title status priority createdAt"),
   ]);
 
-  // 🔥 Simple Activity Generator
+  //  Simple Activity Generator
   const recentActivities = [
     ...recentProjects.map((p) => ({
       message: `Project "${p.projectName}" created`,
@@ -82,13 +82,13 @@ export const getDashboardData = async (userId: string, role: string) => {
   return {
     success: true,
     data: {
-      // 🔹 Stats
+      //  Stats
       totalProjects,
       activeProjects,
       assignedIssues,
       upcomingMeetings,
 
-      // 🔹 Lists
+      //  Lists
       recentProjects,
       recentMeetings,
       recentActivities,

@@ -5,8 +5,9 @@ import { otpTemplate } from '../../templates/otpTemplate'
 import moment from 'moment'
 import jwt from 'jsonwebtoken'
 import { comparePassword, generateOTP, generateToken, getAccessToken, hashPassword } from './user.util'
-import { ChangePasswordDto, ForgotPasswordDto, GetSessionDto, LoginDto, RefreshTokenDto, ReSendOtpDto, SignupDto, VerifyOtpDto } from './user.dto'
+import { ChangePasswordDto, ForgotPasswordDto, LoginDto, ReSendOtpDto, SignupDto, VerifyOtpDto } from './user.dto'
 import { ChangePasswordResponse, ForgotPasswordResponse, GetSessionResponse, LoginResponseInterface, RefreshTokenResponse, ReSendOtpResponse, SignupResponse, VerifyOtpResponse } from './user.interface'
+import { addOtpJob } from './otp/otp.job'
 
 
 
@@ -34,7 +35,8 @@ export const signup = async(body: SignupDto): Promise<SignupResponse> => {
     role: "USER"
   })
 
-  await sendMail(email, "Verify Your DevSync Account", otpTemplate(otp))
+  // await sendMail(email, "Verify Your DevSync Account", otpTemplate(otp))
+  await addOtpJob(user._id.toString(), email, otp);
 
 
   return {

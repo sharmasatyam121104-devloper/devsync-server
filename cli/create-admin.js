@@ -1,9 +1,9 @@
-// create-admin.js (Pure CommonJS compatible)
+// create-admin.js 
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const inquirer = require("inquirer");
 
-// CLI Config imports (Inhe bhi require banana padega agar wo .js hain)
+
 const connectDBForCLI = require("./cli-config/db.cli.js");
 const hashPassword = require("./cli-config/hashPassword.js");
 

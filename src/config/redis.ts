@@ -55,4 +55,13 @@ export const connectRedis = async () => {
   }
 };
 
+if (!redisUrl) {
+  log.error("REDIS_URL is missing");
+  process.exit(1);
+}
+
+export const redisConfig = {
+  url: redisUrl,
+};
+
 export default redisClient;

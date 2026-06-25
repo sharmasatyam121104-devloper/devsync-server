@@ -1,7 +1,7 @@
 // models/apiLog.model.ts
 
 import mongoose, { Schema, Document } from "mongoose";
-import { IApiLog } from "./apilog.interface";
+import { IApiLog } from "./apiLog.interface";
 
 export interface IApiLogDocument extends IApiLog, Document {}
 

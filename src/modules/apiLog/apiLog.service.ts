@@ -1,6 +1,6 @@
 // services/apiLog.service.ts
 
-import { IApiLog } from "./apilog.interface";
+import { IApiLog } from "./apiLog.interface";
 import ApiLogModels from "./apiLog.models";
 
 

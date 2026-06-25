@@ -49,7 +49,8 @@ export const redisConfig = (() => {
 })();
 
 const redisClient = createClient({
-  url: `redis://${redisConfig.host}:${redisConfig.port}`,
+  // url: `redis://${redisConfig.host}:${redisConfig.port}`,
+  url:process.env.REDIS_URL,
 });
 
 //  Better logging

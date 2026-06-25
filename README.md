@@ -3,7 +3,11 @@
 **DevSync Server** is a robust, scalable, and modular backend built using **Node.js**, **Express**, and **TypeScript**. It powers a collaborative project management platform with real-time communication, task tracking, and advanced administrative capabilities.
 
 ---
+## 🎥 Demo Videos
 
+- **[DevSync User Panel Demo](https://www.linkedin.com/posts/satyam-sharma-dev04_i-recently-built-and-demonstrated-devsync-activity-7455238892498075648-Y216)**
+- **[DevSync Admin Panel Demo](https://www.linkedin.com/posts/satyam-sharma-dev04_fullstackdevelopment-mernstack-nodejs-activity-7468269438769782784--Np9)**
+  
 ## 🛠️ Tech Stack
 
 * **Language:** TypeScript

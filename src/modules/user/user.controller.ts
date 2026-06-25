@@ -21,16 +21,18 @@ export const login = async(req: Request, res: Response)=>{
         res.cookie("accessToken", auth.accessToken, {
             httpOnly: true,
             maxAge: Number(process.env.COOKIE_MAX_AGE),
-            domain: process.env.CLIENT_DOMAIN,
-            secure: process.env.NODE_ENV === "dev" ? false : true,
-            sameSite: false
+            domain: process.env.CLIENT,
+            // secure: process.env.NODE_ENV === "dev" ? false : true,
+            secure: true,
+            sameSite: "none"
         })
         res.cookie("refreshToken", auth.refreshToken, {
             httpOnly: true,
             maxAge: Number(process.env.REFRESH_COOKIE_MAX_AGE) || 30 * 24 * 60 * 60 * 1000,
-            domain: process.env.CLIENT_DOMAIN,
-            secure: process.env.NODE_ENV === "dev" ? false : true,
-            sameSite: false
+            domain: process.env.CLIENT,
+            // secure: process.env.NODE_ENV === "dev" ? false : true,
+            secure: true,
+            sameSite: "none"
         })
 
         res.json({message: "Login Success.", role: auth.role})
@@ -46,16 +48,18 @@ export const logOut = async(req: Request, res: Response)=>{
         res.cookie("accessToken", "", {
             httpOnly: true,
             maxAge: 0,
-            domain: process.env.CLIENT_DOMAIN,
-            secure: process.env.NODE_ENV === "dev" ? false : true,
-            sameSite: false
+            domain: process.env.CLIENT,
+            // secure: process.env.NODE_ENV === "dev" ? false : true,
+            secure: true,
+            sameSite: "none"
         })
         res.cookie("refreshToken", "", {
             httpOnly: true,
             maxAge: 0,
-            domain: process.env.CLIENT_DOMAIN,
-            secure: process.env.NODE_ENV === "dev" ? false : true,
-            sameSite: false
+            domain: process.env.CLIENT,
+            // secure: process.env.NODE_ENV === "dev" ? false : true,
+            secure: true,
+            sameSite: "none"
         })
 
         res.json({message: "Logout Success."})
@@ -120,9 +124,10 @@ export const refreshToken = async(req: Request, res: Response)=>{
         res.cookie("accessToken", result.accessToken, {
             httpOnly: true,
             maxAge: Number(process.env.COOKIE_MAX_AGE),
-            domain: process.env.CLIENT_DOMAIN,
-            secure: process.env.NODE_ENV === "dev" ? false : true,
-            sameSite: false
+            domain: process.env.CLIENT,
+            // secure: process.env.NODE_ENV === "dev" ? false : true,
+            secure: true,
+            sameSite: "none"
         })      
         
         res.json({

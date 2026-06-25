@@ -1,3 +1,7 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
+
 import chalk from "chalk";
 import { createClient } from "redis";
 
@@ -30,6 +34,8 @@ if (!redisUrl) {
 const redisClient = createClient({
   url: redisUrl,
 });
+
+console.log(redisUrl);
 
 redisClient.on("error", (err) => {
   log.error(`Redis Error: ${err.message}`);

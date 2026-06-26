@@ -2,6 +2,8 @@ import { Worker } from "bullmq";
 import { redisConfig } from "../../../config/redis";
 import { handleOtp } from "./otp.handler";
 
+console.log("🔥 OTP Worker FILE LOADED");
+
 const worker = new Worker(
   "otpQueue",
   async (job) => {

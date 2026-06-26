@@ -3,30 +3,50 @@ dotenv.config();
 
 
 const sendMail = async (email: string, subject: string, message: string) => {
-  const response = await fetch("https://api.brevo.com/v3/smtp/email", {
-    method: "POST",
-    headers: {
-      "api-key": process.env.BREVO_API_KEY!,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      sender: {
-        name: "DevSync",
-        email: process.env.BREVO_EMAIL,
+  console.log("📨 Sending email to Brevo...");
+console.log("BREVO_EMAIL:", process.env.BREVO_EMAIL);
+  try {
+    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "api-key": process.env.BREVO_API_KEY!,
+        "Content-Type": "application/json",
+        accept: "application/json",
       },
-      to: [{ email }],
-      subject,
-      htmlContent: message,
-    }),
-  });
+      body: JSON.stringify({
+        sender: {
+          name: "DevSync",
+          email: process.env.BREVO_EMAIL!,
+        },
+        to: [{ email }],
+        subject,
+        htmlContent: message,
+      }),
+    });
 
-  const data = await response.json();
+    const data = await response.json();
 
-  if (!response.ok) {
-    throw new Error(JSON.stringify(data));
+    if (!response.ok) {
+      console.error("Brevo API Error:", data);
+      const errMsg =
+  typeof data === "object" && data !== null && "message" in data
+    ? (data as any).message
+    : "Brevo email failed";
+
+throw new Error(errMsg);
+    }
+
+    return data;
+
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("SendMail Error:", error.message);
+      throw error;
+    }
+
+    console.error("Unknown Error:", error);
+    throw new Error("Unexpected error in sendMail");
   }
-
-  return data;
 };
 
 export default sendMail;

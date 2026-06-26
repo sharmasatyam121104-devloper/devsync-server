@@ -38,7 +38,6 @@ export const signup = async(body: SignupDto): Promise<SignupResponse> => {
   // await sendMail(email, "Verify Your DevSync Account", otpTemplate(otp))
   await addOtpJob(user._id.toString(), email, otp);
 
-
   return {
     success: true,
     message: "User created successfully. Please verify your email.",

@@ -2,26 +2,24 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import nodemailer from "nodemailer";
-import type SMTPTransport from "nodemailer/lib/smtp-transport";
 
 const sendMail = async (email: string, subject: string, message: string) => {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    throw new Error("Missing EMAIL credentials");
+  if (!process.env.BREVO_EMAIL || !process.env.BREVO_SMTP_KEY) {
+    throw new Error("Missing Brevo SMTP credentials");
   }
 
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
+    host: "smtp-relay.brevo.com",
     port: 587,
-    secure: false,
+    secure: false, // TLS use hoga
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: process.env.BREVO_EMAIL,
+      pass: process.env.BREVO_SMTP_KEY,
     },
-    family: 4,
-  } as SMTPTransport.Options);
+  });
 
   await transporter.sendMail({
-    from: `DevSync <${process.env.EMAIL_USER}>`,
+    from: `DevSync <${process.env.BREVO_EMAIL}>`,
     to: email,
     subject,
     html: message,
@@ -29,7 +27,6 @@ const sendMail = async (email: string, subject: string, message: string) => {
 };
 
 export default sendMail;
-
 
 
 

@@ -2,25 +2,23 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import nodemailer from "nodemailer";
+import type SMTPTransport from "nodemailer/lib/smtp-transport";
 
 const sendMail = async (email: string, subject: string, message: string) => {
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    throw new Error("EMAIL credentials missing in environment variables");
+    throw new Error("Missing EMAIL credentials");
   }
 
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
-    secure: false, // TLS use hoga
+    secure: false,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
-    connectionTimeout: 15000,
-    socketTimeout: 15000,
-  });
-
-  await transporter.verify(); // connection check (important)
+    family: 4,
+  } as SMTPTransport.Options);
 
   await transporter.sendMail({
     from: `DevSync <${process.env.EMAIL_USER}>`,
@@ -32,7 +30,6 @@ const sendMail = async (email: string, subject: string, message: string) => {
 
 export default sendMail;
 
-// export default sendMail
 
 
 

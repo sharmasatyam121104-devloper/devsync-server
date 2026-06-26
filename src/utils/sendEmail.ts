@@ -1,29 +1,32 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import nodemailer from "nodemailer";
 
 const sendMail = async (email: string, subject: string, message: string) => {
-  if (!process.env.BREVO_EMAIL || !process.env.BREVO_SMTP_KEY) {
-    throw new Error("Missing Brevo SMTP credentials");
+  const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    headers: {
+      "api-key": process.env.BREVO_API_KEY!,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      sender: {
+        name: "DevSync",
+        email: process.env.BREVO_EMAIL,
+      },
+      to: [{ email }],
+      subject,
+      htmlContent: message,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(JSON.stringify(data));
   }
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp-relay.brevo.com",
-    port: 587,
-    secure: false, // TLS use hoga
-    auth: {
-      user: process.env.BREVO_EMAIL,
-      pass: process.env.BREVO_SMTP_KEY,
-    },
-  });
-
-  await transporter.sendMail({
-    from: `DevSync <${process.env.BREVO_EMAIL}>`,
-    to: email,
-    subject,
-    html: message,
-  });
+  return data;
 };
 
 export default sendMail;

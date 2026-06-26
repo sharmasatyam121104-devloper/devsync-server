@@ -3,6 +3,7 @@ dotenv.config();
 
 import { connectDB } from './config/db';
 import "./modules/mettings/meeting.worker";
+import './modules/user/otp/otp.worker'
 import "./socket"
 import chalk from 'chalk';
 import server from './app';

@@ -16,4 +16,12 @@ const worker = new Worker(
   }
 );
 
+worker.on("completed", (job) => {
+  console.log("Job completed in meetingQueue:", job.id);
+});
+
+worker.on("failed", (job, err) => {
+  console.log("Job failed in meetingQueue:", err);
+});
+
 export default worker;

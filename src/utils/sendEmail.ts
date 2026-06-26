@@ -1,43 +1,69 @@
-// import nodemailer from "nodemailer"
+import dotenv from 'dotenv';
+dotenv.config();
 
-// const sendMail = async (email: string, subject: string, message: string) => {
+import nodemailer from "nodemailer";
 
-//   const transporter = nodemailer.createTransport({
-//     service: "gmail",
+const sendMail = async (email: string, subject: string, message: string) => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    throw new Error("EMAIL credentials missing in environment variables");
+  }
 
-//     auth: {
-//       user: process.env.EMAIL_USER,
-//       pass: process.env.EMAIL_PASS
-//     }
-//   })
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false, // TLS use hoga
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+    connectionTimeout: 15000,
+    socketTimeout: 15000,
+  });
 
-//   await transporter.sendMail({
-//     from: process.env.EMAIL_USER,
-//     to: email,
-//     subject: subject,
-//     html: message
-//   })
-// }
+  await transporter.verify(); // connection check (important)
+
+  await transporter.sendMail({
+    from: `DevSync <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject,
+    html: message,
+  });
+};
+
+export default sendMail;
 
 // export default sendMail
 
 
-import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// import { Resend } from "resend";
 
-const sendMail = async (email: string, subject: string, message: string) => {
-  try {
-    await resend.emails.send({
-      from: "DevSync <onboarding@resend.dev>",
-      to: email,
-      subject: subject,
-      html: message,
-    });
-  } catch (error) {
-    console.log("Email Error:", error);
-    throw error;
-  }
-};
+// const resendKey = process.env.RESEND_API_KEY;
 
-export default sendMail;
+// if (!resendKey) {
+//   throw new Error("RESEND_API_KEY is missing in environment variables");
+// }
+
+// const resend = new Resend(resendKey);
+
+// const sendMail = async (email: string, subject: string, message: string) => {
+//   try {
+//     const result = await resend.emails.send({
+//       from: "DevSync <onboarding@resend.dev>",
+//       to: email,
+//       subject,
+//       html: message,
+//     });
+
+//     if (result.error) {
+//       throw result.error;
+//     }
+
+//     return result;
+//   } catch (error) {
+//     console.log("Email Error:", error);
+//     throw error;
+//   }
+// };
+
+// export default sendMail;
